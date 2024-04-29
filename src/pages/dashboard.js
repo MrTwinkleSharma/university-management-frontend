@@ -120,13 +120,14 @@ function Dashboard() {
 
     const handleFormSubmit = async (values, { setSubmitting }) => {
         try {
+            console.log("state ", initialFormValues)
             const response = await fetch('http://localhost:5000/api/students', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
-                body: JSON.stringify(values)
+                body: JSON.stringify(initialFormValues)
             });
 
             if (response.ok) {
@@ -316,7 +317,7 @@ function Dashboard() {
                                         variant="contained"
                                         color="primary"
                                     >
-                                        {initialFormValues ? 'Update' : 'Submit'}
+                                        {initialFormValues.firstName ? 'Update' : 'Add'}
                                     </Button>
                                 </Box>
                             </Form>

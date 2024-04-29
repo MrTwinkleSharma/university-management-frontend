@@ -15,7 +15,7 @@ function Login() {
         // Send data to backend (replace this with your actual API call)
         try {
             // Example of sending data to backend using fetch
-            const response = await fetch('http://localhost:5000/login', {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

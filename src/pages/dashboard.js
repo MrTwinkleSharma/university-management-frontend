@@ -84,7 +84,7 @@ function Dashboard() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/students', {
+                const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/students`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     },
@@ -125,7 +125,7 @@ function Dashboard() {
         console.log("Here")
         try {
             console.log("state ", initialFormValues)
-            const response = await fetch('http://localhost:5000/api/students', {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/students`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

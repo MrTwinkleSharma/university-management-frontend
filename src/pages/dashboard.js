@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { TextField, Button, Typography, Drawer, Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { Formik, Form } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import moment from 'moment';
 
@@ -118,20 +118,19 @@ function Dashboard() {
         address: Yup.string().required('Address is required'),
         joiningDate: Yup.date().required('Joining Date is required'),
         admissionYear: Yup.date().required('Admission Year is required'),
-        feesCollected: Yup.number().required('Fees Collected is required').positive('Fees Collected must be positive'),
-    });
+        feesCollected: Yup.number().required('Fees Collected is required').positive('Fees Collected must be positive').min(100, "Fees Collected should be minimum 100").max(1000000, "Fees Collected should not exceed 1000000"),
+     });
 
-    const handleFormSubmit = async () => {
-        console.log("Here")
+    const handleFormSubmit = async (values, { setSubmitting }) => {
         try {
-            console.log("state ", initialFormValues)
+            console.log("state ", values)
             const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/students`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
-                body: JSON.stringify(initialFormValues)
+                body: JSON.stringify(values)
             });
 
             if (response.ok) {
@@ -156,6 +155,7 @@ function Dashboard() {
             admissionYear: '',
             feesCollected: '',
         });
+        setSubmitting(false);
         setIsFormOpen(false);
     };
 
@@ -195,7 +195,7 @@ function Dashboard() {
                 </div>
             </div>
 
-            <Drawer anchor="right" open={isFormOpen} onClose={() => { setIsFormOpen(false) }}>
+            <Drawer  width="50%" anchor="right" open={isFormOpen} onClose={() => { setIsFormOpen(false) }}>
                 <Box p={2}>
                     <Typography variant="h5" component="h3">
                         Fill Form
@@ -205,118 +205,157 @@ function Dashboard() {
                         validationSchema={validationSchema}
                         onSubmit={handleFormSubmit}
                     >
-                        {({ isSubmitting }) => (
+                        {({ errors, touched, isSubmitting }) => (
                             <Form>
                                 <Box mt={2}>
-                                    <TextField
+                                    <Field
                                         name="firstName"
                                         label="First Name"
                                         variant="outlined"
+                                        as={TextField}
                                         fullWidth
                                         value={initialFormValues.firstName}
                                         onChange={handleInputChange}
                                     />
+                                    {errors.firstName && touched.firstName ? (
+                                        <div className='text-red-700 text-[13px] ml-1'>{errors.firstName}</div>
+                                    ) : null}
                                 </Box>
                                 <Box mt={2}>
-                                    <TextField
+                                    <Field
                                         name="lastName"
                                         label="Last Name"
                                         variant="outlined"
                                         fullWidth
+                                        as={TextField}
                                         value={initialFormValues.lastName}
                                         onChange={handleInputChange}
                                     />
+                                        {errors.lastName && touched.lastName ? (
+                                        <div className='text-red-700 text-[13px] ml-1'>{errors.lastName}</div>
+                                    ) : null}
                                 </Box>
                                 <Box mt={2}>
-                                    <TextField
+                                    <Field
                                         name='dateOfBirth'
                                         label="Date Of Birth"
                                         variant="outlined"
                                         type="date"
                                         fullWidth
+                                        as={TextField}
                                         InputLabelProps={{ shrink: true }}
                                         value={initialFormValues.dateOfBirth}
                                         onChange={handleInputChange}
                                     />
+                                          {errors.dateOfBirth && touched.dateOfBirth ? (
+                                        <div className='text-red-700 text-[13px] ml-1'>{errors.dateOfBirth}</div>
+                                    ) : null}
                                 </Box>
                                 <Box mt={2}>
-                                    <TextField
+                                    <Field
                                         name="courseName"
                                         label="Course Name"
                                         variant="outlined"
                                         fullWidth
+                                        as={TextField}
                                         value={initialFormValues.courseName}
                                         onChange={handleInputChange}
                                     />
+                                         {errors.courseName && touched.courseName ? (
+                                        <div className='text-red-700 text-[13px] ml-1'>{errors.courseName}</div>
+                                    ) : null}
                                 </Box>
                                 <Box mt={2}>
-                                    <TextField
+                                    <Field
                                         name="mobileNumber"
                                         label="Mobile Number"
                                         variant="outlined"
                                         fullWidth
+                                        as={TextField}
                                         value={initialFormValues.mobileNumber}
                                         onChange={handleInputChange}
                                     />
+                                        {errors.mobileNumber && touched.mobileNumber ? (
+                                        <div className='text-red-700 text-[13px] ml-1'>{errors.mobileNumber}</div>
+                                    ) : null}
                                 </Box>
                                 <Box mt={2}>
-                                    <TextField
+                                    <Field
                                         name="emailID"
                                         label="Email ID"
                                         variant="outlined"
                                         fullWidth
+                                        as={TextField}
                                         value={initialFormValues.emailID}
                                         onChange={handleInputChange}
                                     />
+                                        {errors.emailID && touched.emailID ? (
+                                        <div className='text-red-700 text-[13px] ml-1'>{errors.emailID}</div>
+                                    ) : null}
                                 </Box>
                                 <Box mt={2}>
-                                    <TextField
+                                    <Field
                                         name="address"
                                         label="Address"
                                         variant="outlined"
                                         fullWidth
+                                        as={TextField}
                                         value={initialFormValues.address}
                                         onChange={handleInputChange}
                                     />
+                                     {errors.address && touched.address ? (
+                                        <div className='text-red-700 text-[13px] ml-1'>{errors.address}</div>
+                                    ) : null}
                                 </Box>
                                 <Box mt={2}>
-                                    <TextField
+                                    <Field
                                         name="joiningDate"
                                         type="date"
                                         label="Joining Date"
                                         variant="outlined"
                                         InputLabelProps={{ shrink: true }}
                                         fullWidth
+                                        as={TextField}
                                         value={initialFormValues.joiningDate}
                                         onChange={handleInputChange}
                                     />
+                                      {errors.joiningDate && touched.joiningDate ? (
+                                        <div className='text-red-700 text-[13px] ml-1'>{errors.joiningDate}</div>
+                                    ) : null}
                                 </Box>
                                 <Box mt={2}>
-                                    <TextField
+                                    <Field
                                         name="admissionYear"
                                         type="date"
                                         label="Admission Year"
                                         variant="outlined"
                                         InputLabelProps={{ shrink: true }}
                                         fullWidth
+                                        as={TextField}
                                         value={initialFormValues.admissionYear}
                                         onChange={handleInputChange}
                                     />
+                                       {errors.admissionYear && touched.admissionYear ? (
+                                        <div className='text-red-700 text-[13px] ml-1'>{errors.admissionYear}</div>
+                                    ) : null}
                                 </Box>
                                 <Box mt={2}>
-                                    <TextField
+                                    <Field
                                         name="feesCollected"
                                         type="number"
                                         label="Fees Collected"
                                         variant="outlined"
                                         fullWidth
+                                        as={TextField}
                                         value={initialFormValues.feesCollected}
                                         onChange={handleInputChange}
                                     />
+                                       {errors.feesCollected && touched.feesCollected ? (
+                                        <div className='text-red-700 text-[13px] ml-1'>{errors.feesCollected}</div>
+                                    ) : null}
                                 </Box>
                                 <Box mt={2}>
                                     <Button
-                                        onClick={handleFormSubmit}
                                         type="submit"
                                         disabled={isSubmitting}
                                         variant="contained"

@@ -15,7 +15,7 @@ function Header() {
                 About
             </p>
             <p className="text-2xl border-2 rounded-lg px-2 py-1 hover:bg-white hover:text-[#0A1599] cursor-pointer	"
-                onClick={() => navigator('/login')}
+                onClick={() => navigator('/authenticate')}
             >
                 Login
             </p>

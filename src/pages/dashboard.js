@@ -143,6 +143,7 @@ function Dashboard() {
             console.error('Error:', error);
         }
         setRefetch(true);
+        setIsUpdate(false);
         setInitialFormValues({
             firstName: '',
             lastName: '',

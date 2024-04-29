@@ -18,6 +18,8 @@ function Dashboard() {
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState([]);
     const [isFormOpen, setIsFormOpen] = useState(false);
+    const [isUpdate, setIsUpdate] = useState(false);
+
     const [initialFormValues, setInitialFormValues] = useState({
         firstName: '',
         lastName: '',
@@ -33,6 +35,7 @@ function Dashboard() {
     const [refetch, setRefetch] = useState(false);
 
     const handleEdit = (row) => {
+        setIsUpdate(true);
         setInitialFormValues(row);
         setIsFormOpen(true);
     };
@@ -118,7 +121,8 @@ function Dashboard() {
         feesCollected: Yup.number().required('Fees Collected is required').positive('Fees Collected must be positive'),
     });
 
-    const handleFormSubmit = async (values, { setSubmitting }) => {
+    const handleFormSubmit = async () => {
+        console.log("Here")
         try {
             console.log("state ", initialFormValues)
             const response = await fetch('http://localhost:5000/api/students', {
@@ -152,7 +156,6 @@ function Dashboard() {
             feesCollected: '',
         });
         setIsFormOpen(false);
-        setSubmitting(false);
     };
 
     return (
@@ -312,12 +315,13 @@ function Dashboard() {
                                 </Box>
                                 <Box mt={2}>
                                     <Button
+                                        onClick={handleFormSubmit}
                                         type="submit"
                                         disabled={isSubmitting}
                                         variant="contained"
                                         color="primary"
                                     >
-                                        {initialFormValues.firstName ? 'Update' : 'Add'}
+                                        {isUpdate ? 'Update' : 'Add'}
                                     </Button>
                                 </Box>
                             </Form>

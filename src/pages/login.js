@@ -1,19 +1,21 @@
 import { TextField, Box, Button, Typography } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
+import { useNavigate } from "react-router-dom";
 
 function Login() {
     const initialValues = {
         email: '',
         password: ''
     };
+    const navigator = useNavigate();
 
     const handleSubmit = async (values, { setSubmitting }) => {
         console.log("values ", values);
         // Send data to backend (replace this with your actual API call)
         try {
             // Example of sending data to backend using fetch
-            const response = await fetch('https://university-management-o45o.onrender.com:5000/login', {
+            const response = await fetch('http://localhost:5000/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -27,7 +29,7 @@ function Login() {
 
                 // Save token to localStorage
                 localStorage.setItem('token', token);
-
+                navigator("/dashboard")
                 // Redirect or navigate to another page if needed
                 console.log('Login successful');
             } else {

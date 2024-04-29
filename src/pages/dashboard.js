@@ -81,7 +81,7 @@ function Dashboard() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('https://university-management-o45o.onrender.com:5000/api/students', {
+                const response = await fetch('http://localhost:5000/api/students', {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     },
@@ -120,7 +120,7 @@ function Dashboard() {
 
     const handleFormSubmit = async (values, { setSubmitting }) => {
         try {
-            const response = await fetch('https://university-management-o45o.onrender.com:5000/api/students', {
+            const response = await fetch('http://localhost:5000/api/students', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

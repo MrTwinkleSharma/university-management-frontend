@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-
+import axios from 'axios';
 const MODE = {
     LOGIN: 0,
     SIGNUP: 1,
@@ -18,31 +18,29 @@ function Login({ handleModeChange }) {
         // Send data to backend (replace this with your actual API call)
         try {
             // Example of sending data to backend using fetch
-            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/authenticate/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(values)
-            });
-
-            if (response.ok) {
-                const data = await response.json();
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/authenticate/login`,
+                values,
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            console.log("response ", response);
+            const { data } = response;
+            if (data.success) {
                 const { token } = data;
 
                 // Save token to localStorage
                 localStorage.setItem('token', token);
                 navigator("/dashboard")
-                // Redirect or navigate to another page if needed
-                console.log('Login successful');
+                toast("Logged In Succesfully")
             } else {
-                // Handle error response
-                console.error('Login failed');
+                toast(data.message)
             }
         } catch (error) {
             console.error('Error:', error);
         }
-
         setSubmitting(false);
     };
 
@@ -132,6 +130,11 @@ function Signup({ handleModeChange }) {
             });
 
             if (response.ok) {
+                const responseData = await response.json();
+                console.log(responseData);
+                if (!responseData.success) {
+                    return toast(responseData.message)
+                }
                 toast("Signed Up Successfully! Redirecting to Login in 3 Seconds...")
                 setTimeout(() => {
                     handleModeChange(MODE.LOGIN)

@@ -6,7 +6,7 @@ function Home() {
         <div className='sticky top-0 w-full'>
             <Header />
         </div>
-        <img className="" src="/building_2.jpg" alt="college" />
+        <img className="" src="https://res.cloudinary.com/dvmguufnp/image/upload/v1714914312/building_2_aiupho.jpg" alt="college" />
         <div className='static bottom-0 w-full'>
             <Footer />
         </div>

@@ -376,7 +376,7 @@ function Authenticate() {
         setMode(newMode);
     };
     return (
-        <div className="h-screen bg-cover bg-[url('college_building.jpg')]" >
+        <div className="h-screen bg-cover bg-[url('https://res.cloudinary.com/dvmguufnp/image/upload/v1714914115/college_building_bhavpj.jpg')]" >
             <div className='flex flex-col items-center justify-center h-full'>
                 {
                     mode === MODE.LOGIN ?

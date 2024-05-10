@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { TextField, Button, Typography, Drawer, Box } from '@mui/material';
@@ -8,21 +7,21 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { toast } from 'react-toastify';
-import moment from 'moment';
 
-export default function Collection() {
 
+export default function Admins() {
     const [isLoading, setIsLoading] = useState(true);
 
     const [data, setData] = useState([]);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
     const [formikInitialState, setFormikInitialState] = useState({
-        collectionID: '',
-        studentID: '',
-        timestamp: '',
-        amount: '',
-        comment: '',
+        adminID: '',
+        firstName: '',
+        lastName: '',
+        mobileNumber: '',
+        emailID: '',
+        password: '',
     })
     const [refetch, setRefetch] = useState(false);
 
@@ -30,29 +29,29 @@ export default function Collection() {
         setIsUpdate(true);
         setIsFormOpen(true);
         setFormikInitialState({
-            collectionID: row.collectionID || '',
-            studentID: row.studentID || '',
-            timestamp: row.timestamp || '',
-            amount: row.amount || '',
-            comment: row.comment || '',
+            adminID: row.adminID || '',
+            firstName: row.firstName || '',
+            lastName: row.lastName || '',
+            mobileNumber: row.mobileNumber || '',
+            emailID: row.emailID || '',
         });
 
     };
 
     const handleDelete = async (row) => {
         try {
-            console.log("state ", row.collectionID)
-            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/collections`, {
+            console.log("state ", row.adminID)
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admins`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
-                body: JSON.stringify({ collectionID: row.collectionID })
+                body: JSON.stringify({ adminID: row.adminID })
             });
 
             if (response.ok) {
-                toast("Collection Deleted Successfully")
+                toast("Admin Deleted Successfully")
             } else {
                 console.error('Delete failed');
             }
@@ -63,14 +62,11 @@ export default function Collection() {
     };
 
     const columns = [
-        { field: 'collectionID', headerName: 'Collection ID', width: 150 },
-        { field: 'studentID', headerName: 'Student ID', width: 150 },
-        { field: 'amount', headerName: 'Amount', width: 150,
-        renderCell: (params) => `${params.row.amount} INR`
-
-         },
-        { field: 'comment', headerName: 'Comment', width: 150 },
-        { field: 'timestamp', headerName: 'Timestamp', width: 150 },
+        { field: 'adminID', headerName: 'Admin ID', width: 90 },
+        { field: 'firstName', headerName: 'First name', width: 150 },
+        { field: 'lastName', headerName: 'Last name', width: 150 },
+        { field: 'mobileNumber', headerName: 'Mobile Number', width: 150 },
+        { field: 'emailID', headerName: 'Email ID', width: 200 },
         {
             field: 'edit',
             headerName: 'Action',
@@ -100,7 +96,7 @@ export default function Collection() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/collections`, {
+                const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admins`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     },
@@ -124,16 +120,25 @@ export default function Collection() {
         fetchData();
     }, [refetch]);
 
-    const validationSchema = Yup.object().shape({
-        studentID: Yup.string().required('Student ID is required'),
-        amount: Yup.number().required('Amount is required'),
+    const insertValidationSchema = Yup.object().shape({
+        firstName: Yup.string().required('First name is required'),
+        lastName: Yup.string().required('Last name is required'),
+        mobileNumber: Yup.string().required('Mobile Number is required'),
+        emailID: Yup.string().email('Invalid email address').required('Email ID is required'),
+        password:  Yup.string().required('Password is required')  
+    });
+
+    const updateValidationSchema = Yup.object().shape({
+        firstName: Yup.string().required('First name is required'),
+        lastName: Yup.string().required('Last name is required'),
+        mobileNumber: Yup.string().required('Mobile Number is required'),
+        emailID: Yup.string().email('Invalid email address').required('Email ID is required'),
     });
 
     const handleFormSubmit = async (values, { setSubmitting }) => {
         try {
-            values.timestamp = moment().format('YYYY-MM-DD HH:mm:ss');
             console.log("state ", values)
-            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/collections`, {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admins`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -144,32 +149,40 @@ export default function Collection() {
 
             if (response.ok) {
                 if (isUpdate) {
-                    toast("Collection Information Updated Successfully")
+                    toast("Admin Information Updated Successfully")
                 } else {
-                    toast("Collection Added Successfully")
+                    toast("Admin Added Successfully")
                 }
+                setRefetch(true);
+                setIsUpdate(false);
+                setSubmitting(false);
+                setIsFormOpen(false);
             } else {
                 console.error('Add/Update failed');
             }
         } catch (error) {
             console.error('Error:', error);
         }
-        setRefetch(true);
-        setIsUpdate(false);
-        setSubmitting(false);
-        setIsFormOpen(false);
     };
     return <><div className='h-full'>
         <div className='px-6 py-4'>
 
             <Button onClick={() => {
-
+                setIsUpdate(false)
                 setIsFormOpen(true);
-            }}>Add Collection</Button>
+                setFormikInitialState({
+                    adminID: '',
+                    firstName: '',
+                    lastName: '',
+                    mobileNumber: '',
+                    emailID: '',
+                    password: '',
+                })
+            }}>Add Admins</Button>
 
             <Box sx={{ height: 400, overflowX: 'auto', width: "100%" }}>
                 <DataGrid
-                    getRowId={(row) => row.studentID}
+                    getRowId={(row) => row.adminID}
                     loading={isLoading}
                     rows={data}
                     columns={columns}
@@ -184,45 +197,70 @@ export default function Collection() {
                 </Typography>
                 <Formik
                     initialValues={formikInitialState}
-                    validationSchema={validationSchema}
+                    validationSchema={isUpdate ? updateValidationSchema : insertValidationSchema}
                     onSubmit={handleFormSubmit}
                 >
                     {({ errors, touched, isSubmitting }) => (
                         <Form>
                             <Box mt={2}>
                                 <Field
-                                    name="studentID"
-                                    label="Student ID"
+                                    name="firstName"
+                                    label="First Name"
                                     variant="outlined"
                                     as={TextField}
                                     fullWidth />
-                                {errors.studentID && touched.studentID ? (
-                                    <div className='text-red-700 text-[13px] ml-1'>{errors.studentID}</div>
+                                {errors.firstName && touched.firstName ? (
+                                    <div className='text-red-700 text-[13px] ml-1'>{errors.firstName}</div>
                                 ) : null}
                             </Box>
                             <Box mt={2}>
                                 <Field
-                                    name="comment"
-                                    label="Comment"
+                                    name="lastName"
+                                    label="Last Name"
                                     variant="outlined"
-                                    as={TextField}
-                                    fullWidth />
-                                {errors.comment && touched.comment ? (
-                                    <div className='text-red-700 text-[13px] ml-1'>{errors.comment}</div>
-                                ) : null}
-                            </Box>
-                            <Box mt={2}>
-                                <Field
-                                    name="amount"
-                                    label="Amount"
-                                    variant="outlined"
-                                    type="number"
                                     fullWidth
                                     as={TextField} />
-                                {errors.amount && touched.amount ? (
-                                    <div className='text-red-700 text-[13px] ml-1'>{errors.amount}</div>
+                                {errors.lastName && touched.lastName ? (
+                                    <div className='text-red-700 text-[13px] ml-1'>{errors.lastName}</div>
                                 ) : null}
                             </Box>
+                            <Box mt={2}>
+                                <Field
+                                    name="mobileNumber"
+                                    label="Mobile Number"
+                                    variant="outlined"
+                                    fullWidth
+                                    as={TextField} />
+                                {errors.mobileNumber && touched.mobileNumber ? (
+                                    <div className='text-red-700 text-[13px] ml-1'>{errors.mobileNumber}</div>
+                                ) : null}
+                            </Box>
+                            <Box mt={2}>
+                                <Field
+                                    name="emailID"
+                                    label="Email ID"
+                                    variant="outlined"
+                                    fullWidth
+                                    as={TextField} />
+                                {errors.emailID && touched.emailID ? (
+                                    <div className='text-red-700 text-[13px] ml-1'>{errors.emailID}</div>
+                                ) : null}
+                            </Box>
+
+                            {
+                                !isUpdate ? <Box mt={2}>
+                                    <Field
+                                        name="password"
+                                        label="Password"
+                                        variant="outlined"
+                                        fullWidth
+                                        as={TextField} />
+                                    {errors.password && touched.password ? (
+                                        <div className='text-red-700 text-[13px] ml-1'>{errors.password}</div>
+                                    ) : null}
+                                </Box> : null
+                            }
+
                             <Box mt={2}>
                                 <Button
                                     type="submit"
